@@ -1,6 +1,8 @@
 package edd
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	EOF = errors.New("EOF")
@@ -43,6 +45,7 @@ func (r *Reader) Read(fn func(string, error)) {
 		r.Close()
 	}
 	r.p.e.Once("data", &onData)
+	r.p.e.Clean("close")
 	r.p.e.Once("close", &onClose)
 }
 

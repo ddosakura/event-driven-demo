@@ -10,6 +10,7 @@ import (
 func reading(r *Reader) {
 	r.Read(func(d string, e error) {
 		if e == EOF {
+			println("EOF")
 			return
 		}
 		if e != nil {
@@ -34,6 +35,8 @@ func TestMain(t *testing.T) {
 			w.Write(fmt.Sprintf("No. %d\n", i))
 			time.Sleep(1 * time.Second)
 		}
+		w.Close()
+		time.Sleep(1 * time.Second)
 		wg.Done()
 	}()
 	wg.Wait()
