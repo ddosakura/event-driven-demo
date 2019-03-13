@@ -1,5 +1,7 @@
 package edd
 
+// no buffer io
+
 import (
 	"errors"
 )

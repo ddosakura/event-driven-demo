@@ -7,32 +7,17 @@ import (
 	"time"
 )
 
-func reading(r *Reader) {
-	r.Read(func(d string, e error) {
-		if e == EOF {
-			println("EOF")
-			return
-		}
-		if e != nil {
-			panic(e)
-		}
-		print(d)
-		reading(r)
-	})
-}
-
-func TestMain(t *testing.T) {
+func TestAsync(t *testing.T) {
 	p := NewPipe()
 	r := NewReader(p)
 	w := NewWriter(p)
-
-	reading(r)
 
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
 		time.Sleep(1 * time.Second)
 		for i := 0; i < 3; i++ {
+			// println("writing")
 			w.Write(fmt.Sprintf("No. %d\n", i))
 			time.Sleep(1 * time.Second)
 		}
@@ -40,5 +25,18 @@ func TestMain(t *testing.T) {
 		time.Sleep(1 * time.Second)
 		wg.Done()
 	}()
+
+	for {
+		// println("waiting write")
+		d, ok := <-Await(AsyncRead(r))
+		// println("get from chan")
+		if ok {
+			print(d.(string))
+		} else {
+			println("EOF")
+			break
+		}
+	}
+
 	wg.Wait()
 }

@@ -45,6 +45,7 @@ func TestPromise(t *testing.T) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
+		time.Sleep(1 * time.Second)
 		for i := 0; i < 3; i++ {
 			w.Write(fmt.Sprintf("No. %d\n", i))
 			time.Sleep(1 * time.Second)
